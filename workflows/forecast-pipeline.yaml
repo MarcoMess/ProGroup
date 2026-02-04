@@ -1,0 +1,26 @@
+apiVersion: ai.sap.com/v1alpha1
+kind: ExecutionTemplate
+metadata:
+  name: progroup-forecast-run
+  annotations:
+    scenarios.ai.sap.com/id: "vertriebs-forecast"
+    scenarios.ai.sap.com/name: "Progroup Vertriebs Prognose"
+    executables.ai.sap.com/id: "forecast-exec"
+    executables.ai.sap.com/name: "Absatz-Prognose-Algorithmus"
+spec:
+  imagePullSecrets:
+    - name: dein-docker-secret  # Falls dein Docker-Image privat ist
+  template:
+    spec:
+      containers:
+        - name: forecaster
+          image: "docker.io/dein-nutzername/progroup-forecast:latest"
+          command: ["python3", "forecast_script.py"]
+          inputs:
+            artifacts:
+              - name: sales-history
+                path: /mnt/models/
+          outputs:
+            artifacts:
+              - name: forecast-result
+                path: /app/data/
