@@ -1,7 +1,7 @@
 apiVersion: ai.sap.com/v1alpha1
 kind: ExecutionTemplate
 metadata:
-  name: progroup-forecast-run
+  name: forecast-pipeline-v1
   annotations:
     scenarios.ai.sap.com/id: "vertriebs-forecast"
     scenarios.ai.sap.com/name: "Progroup Vertriebs Prognose"
