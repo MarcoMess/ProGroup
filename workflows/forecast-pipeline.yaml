@@ -1,41 +1,42 @@
 apiVersion: ai.sap.com/v1alpha1
 kind: ServingTemplate
 metadata:
-  name: progroup-forecast-pipeline # Eindeutiger Name des Templates
+  name: progroup-forecast-pipeline
   annotations:
-    scenarios.ai.sap.com/id: "vertriebs-forecast"
     scenarios.ai.sap.com/name: "Progroup Vertriebs Prognose"
-    executables.ai.sap.com/id: "forecast-exec"
     executables.ai.sap.com/name: "Absatz-Prognose-Algorithmus"
   labels:
-    ai.sap.com/version: 0.1.0
     scenarios.ai.sap.com/id: "vertriebs-forecast"
+    executables.ai.sap.com/id: "forecast-exec"
+    ai.sap.com/version: "0.1.0"
 spec:
   inputs:
     artifacts:
-      - name: "sales-data" # Platzhalter für deine salesorder1.csv
+      - name: "sales-data"
   template:
     apiVersion: "serving.kserve.io/v1beta1"
     metadata:
-      annotations: |
-        autoscaling.knative.dev/metric: rps
-        autoscaling.knative.dev/target: 100
-        autoscaling.knative.dev/targetBurstCapacity: 70
-      labels: |
+      annotations:
+        autoscaling.knative.dev/metric: "rps"
+        autoscaling.knative.dev/target: "100"
+        autoscaling.knative.dev/targetBurstCapacity: "70"
+      labels:
         ai.sap.com/instanceType: "g6e.4xlarge"
     spec:
-      containers:
-        - name: "forecaster"
-          image: "python:3.9" # Standard-Image für den Test
-          command: ["python", "-c"]
-          args:
-            - |
-              print("Starte Progroup Forecast Analyse...")
-              # Später liest dein Code hier /input/sales-data/salesorder1.csv
-          volumeMounts:
-            - name: "sales-data-volume"
-              mountPath: "/input/sales-data/"
-  volumes:
-    - name: "sales-data-volume"
-      target:
-        artifactName: "sales-data"
+      predictor:
+        containers:
+          - name: "forecaster"
+            image: "python:3.9"
+            command: ["python", "-c"]
+            args:
+              - |
+                import os
+                print("Starte Progroup Forecast Analyse...")
+                # Deine Logik hier
+            volumeMounts:
+              - name: "sales-data-volume"
+                mountPath: "/input/sales-data/"
+        volumes:
+          - name: "sales-data-volume"
+            target:
+              artifactName: "sales-data"
