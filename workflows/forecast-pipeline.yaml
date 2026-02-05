@@ -1,31 +1,41 @@
 apiVersion: ai.sap.com/v1alpha1
 kind: ExecutionTemplate
 metadata:
-  name: progroup-forecast-pipeline
+  name: progroup-forecast-pipeline # Eindeutiger Name des Templates
   annotations:
     scenarios.ai.sap.com/id: "vertriebs-forecast"
     scenarios.ai.sap.com/name: "Progroup Vertriebs Prognose"
     executables.ai.sap.com/id: "forecast-exec"
     executables.ai.sap.com/name: "Absatz-Prognose-Algorithmus"
+   labels:
+    ai.sap.com/version: 0.1.0
+    scenarios.ai.sap.com/id: "vertriebs-forecast"
 spec:
   inputs:
     artifacts:
-      - name: sales-data # Diesen Namen nutzt du später im Launchpad beim Dataset-Link
+      - name: "sales-data" # Platzhalter für deine salesorder1.csv
   template:
+    apiVersion: "serving.kserve.io/v1beta1"
+    metadata:
+      annotations: |
+        autoscaling.knative.dev/metric: rps
+        autoscaling.knative.dev/target: 100
+        autoscaling.knative.dev/targetBurstCapacity: 70
+      labels: |
+        ai.sap.com/instanceType: "g6e.4xlarge"
     spec:
       containers:
-        - name: forecaster
-          image: "python:3.9" # Hier kommt später dein Docker-Image von Nagarro rein
+        - name: "forecaster"
+          image: "python:3.9" # Standard-Image für den Test
           command: ["python", "-c"]
           args:
             - |
-              print("Starte Forecast für Progroup...")
-              # Hier würde dein Skript die /input/sales-data/salesorder1.csv lesen
+              print("Starte Progroup Forecast Analyse...")
+              # Später liest dein Code hier /input/sales-data/salesorder1.csv
           volumeMounts:
-            - name: sales-data-volume
-              mountPath: /input/sales-data/
-  # Diese Sektion verbindet das Dataset mit dem Container-Pfad
+            - name: "sales-data-volume"
+              mountPath: "/input/sales-data/"
   volumes:
-    - name: sales-data-volume
+    - name: "sales-data-volume"
       target:
-        artifactName: sales-data
+        artifactName: "sales-data"
