@@ -8,19 +8,9 @@ metadata:
     executables.ai.sap.com/id: "forecast-exec"
     executables.ai.sap.com/name: "Absatz-Prognose-Algorithmus"
 spec:
-  imagePullSecrets:
-    - name: dein-docker-secret  # Falls dein Docker-Image privat ist
   template:
     spec:
       containers:
         - name: forecaster
-          image: "docker.io/dein-nutzername/progroup-forecast:latest"
-          command: ["python3", "forecast_script.py"]
-          inputs:
-            artifacts:
-              - name: sales-history
-                path: /mnt/models/
-          outputs:
-            artifacts:
-              - name: forecast-result
-                path: /app/data/
+          image: "python:3.9"
+          command: ["python", "-c", "print('Hello Progroup')"]
