@@ -7,7 +7,7 @@ metadata:
     scenarios.ai.sap.com/name: "Progroup Vertriebs Prognose"
     executables.ai.sap.com/id: "forecast-exec"
     executables.ai.sap.com/name: "Absatz-Prognose-Algorithmus"
-   labels:
+  labels:
     ai.sap.com/version: 0.1.0
     scenarios.ai.sap.com/id: "vertriebs-forecast"
 spec:
