@@ -1,16 +1,31 @@
 apiVersion: ai.sap.com/v1alpha1
 kind: ExecutionTemplate
 metadata:
-  name: forecast-pipeline-v1
+  name: progroup-forecast-pipeline
   annotations:
     scenarios.ai.sap.com/id: "vertriebs-forecast"
     scenarios.ai.sap.com/name: "Progroup Vertriebs Prognose"
     executables.ai.sap.com/id: "forecast-exec"
     executables.ai.sap.com/name: "Absatz-Prognose-Algorithmus"
 spec:
+  inputs:
+    artifacts:
+      - name: sales-data # Diesen Namen nutzt du später im Launchpad beim Dataset-Link
   template:
     spec:
       containers:
         - name: forecaster
-          image: "python:3.9"
-          command: ["python", "-c", "print('Hello Progroup')"]
+          image: "python:3.9" # Hier kommt später dein Docker-Image von Nagarro rein
+          command: ["python", "-c"]
+          args:
+            - |
+              print("Starte Forecast für Progroup...")
+              # Hier würde dein Skript die /input/sales-data/salesorder1.csv lesen
+          volumeMounts:
+            - name: sales-data-volume
+              mountPath: /input/sales-data/
+  # Diese Sektion verbindet das Dataset mit dem Container-Pfad
+  volumes:
+    - name: sales-data-volume
+      target:
+        artifactName: sales-data
